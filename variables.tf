@@ -22,6 +22,7 @@ variable "permissions_scope" {
 
 variable "regions" {
   type        = list(string)
+  default     = []
   description = "List of AWS regions where the role should be restricted (only required if permissions_scope is 'Regional'). Example: us-east-1,us-west-2"
 
   validation {

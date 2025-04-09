@@ -54,6 +54,43 @@ To remove the resources created by this example, run:
 terraform destroy --auto-approve
 ```
 
+### Example Configuration
+Below is the Terraform configuration used in this example:
+
+```hcl
+terraform {
+  required_version = ">= 1.3.2"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.83"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+module "datafy_role" {
+  source  = "datafy-io/iam-role/datafy"
+  version = "~> 1.0"
+
+  permissions_level = "AutoScaler"
+  permissions_scope = "Global"
+}
+
+output "datafy_role_name" {
+  value = module.datafy_role.role_name
+}
+
+output "datafy_role_arn" {
+  value = module.datafy_role.role_arn
+}
+
+```
+
 ### Notes
 * Ensure that the AWS account has sufficient permissions to create IAM roles.
 * Be sure to clean up resources when they are no longer needed.

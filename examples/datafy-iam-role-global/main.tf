@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 module "datafy_role" {
-  source  = "datafy-io/datafy"
+  source  = "datafy-io/iam-role/datafy"
   version = "~> 1.0"
 
   permissions_level = "AutoScaler"
