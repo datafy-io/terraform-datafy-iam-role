@@ -11,7 +11,7 @@ variable "permissions_level" {
 
 variable "permissions_scope" {
   type        = string
-  default     = "Regional"
+  default     = "Global"
   description = "Use 'Global' to apply permissions across all AWS regions. Use 'Regional' to limit permissions to selected regions, which must be specified in 'Regions'."
 
   validation {
@@ -26,8 +26,20 @@ variable "regions" {
   description = "List of AWS regions where the role should be restricted (only required if permissions_scope is 'Regional'). Example: us-east-1,us-west-2"
 
   validation {
-    condition     = var.permissions_scope == "Global" || contains([[us-east-1, us-east-2, us-west-1, us-west-2, af-south-1, ap-east-1, ap-south-1, ap-south-2, ap-southeast-1, ap-southeast-2, ap-southeast-3, ap-northeast-1, ap-northeast-2, ap-northeast-3, ca-central-1, eu-central-1, eu-central-2, eu-west-1, eu-west-2, eu-west-3, eu-north-1, eu-south-1, eu-south-2, me-central-1, me-south-1, sa-east-1, cn-north-1, cn-northwest-1, us-gov-west-1, us-gov-east-1, il-central-1, es-central-1, mx-central-1]], var.permissions_scope)
-    error_message = "Invalid value for permissions_scope. Allowed values are 'Regional' or 'Global'."
+    condition     = var.permissions_scope == "Regional" || length(var.regions) == 0
+    error_message = "Invalid value for regions. Regions must be empty when permissions_scope is set to 'Global'."
+  }
+
+  validation {
+    condition     = var.permissions_scope == "Global" || length(var.regions) != 0
+    error_message = "Invalid value for regions. Regions must not be empty when permissions_scope is set to 'Regional'."
+  }
+
+  validation {
+    condition = var.permissions_scope == "Global" || alltrue([
+      for r in var.regions : contains(["us-east-1", "us-east-2", "us-west-1", "us-west-2", "af-south-1", "ap-east-1", "ap-south-1", "ap-south-2", "ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ca-central-1", "eu-central-1", "eu-central-2", "eu-west-1", "eu-west-2", "eu-west-3", "eu-north-1", "eu-south-1", "eu-south-2", "me-central-1", "me-south-1", "sa-east-1", "cn-north-1", "cn-northwest-1", "us-gov-west-1", "us-gov-east-1", "il-central-1", "es-central-1", "mx-central-1"], r)
+    ])
+    error_message = "Invalid value for regions."
   }
 }
 
@@ -51,4 +63,10 @@ variable "oidc_url" {
     condition     = can(regex("https://[a-zA-Z0-9.-]+", var.oidc_url))
     error_message = "Invalid OIDC URL format."
   }
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to assign to the created resources."
+  default     = {}
 }

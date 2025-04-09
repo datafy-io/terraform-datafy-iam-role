@@ -6,11 +6,13 @@ resource "aws_iam_openid_connect_provider" "datafy" {
   thumbprint_list = [
     "9e99a48a9960b14926bb7f3b02e22da2b0ab7280",
   ]
+  tags = var.tags
 }
 
 resource "aws_iam_role" "datafy" {
   name        = var.role_name
   description = "Service Role for Datafy.io"
+  tags        = var.tags
 
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
