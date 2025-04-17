@@ -74,6 +74,10 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateVolume",
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
+          "ebs:StartSnapshot",
+          "ebs:PutSnapshotBlock",
+          "ebs:CompleteSnapshot",
+          "ebs:ListSnapshotBlocks",
         ],
         "Resource" : "*"
         "Condition" = var.permissions_scope == "Regional" ? {
