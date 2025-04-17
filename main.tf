@@ -55,7 +55,7 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:DescribeInstanceTypes",
           "ec2:DescribeRegions",
         ],
-        "Resource" : "*"
+        "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
           "StringEquals" = {
             "aws:RequestedRegion" = var.regions
@@ -74,13 +74,33 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateVolume",
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
+          "ebs:StartSnapshot",
         ],
-        "Resource" : "*"
+        "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
           "StringEquals" = {
             "aws:RequestedRegion" = var.regions
           }
         } : {}
+      },
+      {
+        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
+        "Action" : [
+          "ebs:PutSnapshotBlock",
+          "ebs:CompleteSnapshot",
+          "ebs:ListSnapshotBlocks",
+        ],
+        "Resource" : "*",
+        "Condition" : {
+          "StringEquals" : merge(
+            var.permissions_scope == "Regional" ? {
+              "aws:RequestedRegion" : var.regions
+            } : {},
+            {
+              "aws:ResourceTag/Managed-By" : "Datafy.io"
+            }
+          )
+        }
       },
       {
         "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
@@ -104,6 +124,21 @@ resource "aws_iam_role_policy" "datafy" {
       {
         "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
         "Action" : [
+          "ec2:CreateTags"
+        ],
+        "Resource" : [
+          "arn:aws:ec2:*:*:snapshot/*"
+        ],
+        "Condition" : {
+          "StringEquals" : {
+            "aws:RequestTag/Managed-By" : "Datafy.io"
+          }
+        }
+      },
+      {
+        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
+        "Action" : [
+          "ec2:CreateTags",
           "ec2:DeleteTags"
         ],
         "Resource" : [
@@ -111,7 +146,7 @@ resource "aws_iam_role_policy" "datafy" {
           "arn:aws:ec2:*:*:snapshot/*"
         ],
         "Condition" : {
-          "StringLike" : {
+          "StringEquals" : {
             "aws:ResourceTag/Managed-By" : "Datafy.io"
           }
         }
@@ -135,6 +170,7 @@ resource "aws_iam_role_policy" "datafy_validation" {
           "iam:ListAttachedRolePolicies",
           "iam:ListRolePolicisdses",
           "iam:SimulatePrincipalPolicy",
+          "iam:GetContextKeysForPrincipalPolicy",
         ],
         "Resource" : aws_iam_role.datafy.arn,
       },
