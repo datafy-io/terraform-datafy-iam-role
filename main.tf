@@ -133,7 +133,8 @@ resource "aws_iam_role_policy" "datafy_validation" {
           "iam:GetRole",
           "iam:GetRolePolicy",
           "iam:ListAttachedRolePolicies",
-          "iam:ListRolePolicies"
+          "iam:ListRolePolicisdses",
+          "iam:SimulatePrincipalPolicy",
         ],
         "Resource" : aws_iam_role.datafy.arn,
       },
