@@ -151,6 +151,22 @@ resource "aws_iam_role_policy" "datafy" {
           }
         }
       },
+      {
+        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
+        "Action" : [
+          "kms:Decrypt",
+          "kms:ReEncryptFrom",
+          "kms:ReEncryptTo",
+        ],
+        "Resource" : [
+          "arn:aws:kms:*:*:key/*",
+        ],
+        "Condition" = var.permissions_scope == "Regional" ? {
+          "StringEquals" = {
+            "aws:RequestedRegion" = var.regions
+          }
+        } : {}
+      },
     ]
   })
 }
