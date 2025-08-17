@@ -12,7 +12,14 @@ resource "aws_iam_openid_connect_provider" "datafy" {
 resource "aws_iam_role" "datafy" {
   name        = var.role_name
   description = "Service Role for Datafy.io"
-  tags        = var.tags
+  tags        = merge(
+    {
+      "datafy:role:scope"   = var.permissions_scope
+      "datafy:role:level"   = var.permissions_level
+      "datafy:role:version" = local.role_version
+    },
+    var.tags,
+  )
 
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
