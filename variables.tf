@@ -70,3 +70,13 @@ variable "tags" {
   description = "A map of tags to assign to the created resources."
   default     = {}
 }
+
+locals {
+  role_version = try(
+    [
+      for m in lookup(jsondecode(file("${path.root}/.terraform/modules/modules.json")), "Modules", []) :
+      m.Version if try(startswith(m.Source, "registry.terraform.io/datafy-io/iam-role"), false) && can(m.Version)
+    ][0],
+    null
+  )
+}

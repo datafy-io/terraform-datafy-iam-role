@@ -173,6 +173,13 @@ resource "aws_iam_role_policy" "datafy" {
   })
 }
 
+resource "aws_ssm_parameter" "datafy_version" {
+  name        = "/datafy/role/version"
+  type        = "String"
+  value       = local.role_version != null ? local.role_version : ""
+  description = "Datafy.io AWS Role version"
+}
+
 resource "aws_iam_role_policy" "datafy_validation" {
   name = "DatafyIOValidationPolicy"
   role = aws_iam_role.datafy.id
@@ -180,6 +187,13 @@ resource "aws_iam_role_policy" "datafy_validation" {
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameter"
+        ],
+        "Resource" : aws_ssm_parameter.datafy_version.arn,
+      },
       {
         "Effect" : "Allow"
         "Action" : [
