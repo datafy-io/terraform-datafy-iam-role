@@ -154,6 +154,8 @@ resource "aws_iam_role_policy" "datafy" {
       {
         "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
         "Action" : [
+          "kms:CreateGrant",
+          "kms:GenerateDataKeyWithoutPlaintext",
           "kms:Decrypt",
           "kms:ReEncryptFrom",
           "kms:ReEncryptTo",
