@@ -54,7 +54,6 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:DescribeVolumesModifications",
           "ec2:DescribeInstanceTypes",
           "ec2:DescribeRegions",
-          "ec2:GetConsoleOutput",
         ],
         "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
@@ -187,7 +186,7 @@ resource "aws_iam_role_policy" "datafy_validation" {
           "iam:GetRole",
           "iam:GetRolePolicy",
           "iam:ListAttachedRolePolicies",
-          "iam:ListRolePolicisdses",
+          "iam:ListRolePolicies",
           "iam:SimulatePrincipalPolicy",
           "iam:GetContextKeysForPrincipalPolicy",
         ],
