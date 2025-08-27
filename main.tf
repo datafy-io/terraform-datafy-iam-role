@@ -60,6 +60,7 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:DescribeVolumes",
           "ec2:DescribeVolumeStatus",
           "ec2:DescribeVolumesModifications",
+          "ec2:GetConsoleOutput",
         ],
         "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
