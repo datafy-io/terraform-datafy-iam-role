@@ -82,6 +82,8 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
           "ebs:StartSnapshot",
+          "ec2:CreateTags",
+          "ec2:DeleteTags",
         ],
         "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
@@ -107,55 +109,6 @@ resource "aws_iam_role_policy" "datafy" {
               "aws:ResourceTag/Managed-By" : "Datafy.io"
             }
           )
-        }
-      },
-      {
-        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
-        "Action" : [
-          "ec2:CreateTags"
-        ],
-        "Resource" : [
-          "arn:aws:ec2:*:*:volume/*",
-          "arn:aws:ec2:*:*:snapshot/*"
-        ],
-        "Condition" : {
-          "StringEquals" : {
-            "ec2:CreateAction" : [
-              "CreateVolume",
-              "CreateSnapshot",
-              "CreateSnapshots",
-            ]
-          }
-        }
-      },
-      {
-        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
-        "Action" : [
-          "ec2:CreateTags"
-        ],
-        "Resource" : [
-          "arn:aws:ec2:*:*:snapshot/*"
-        ],
-        "Condition" : {
-          "StringEquals" : {
-            "aws:RequestTag/Managed-By" : "Datafy.io"
-          }
-        }
-      },
-      {
-        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
-        "Action" : [
-          "ec2:CreateTags",
-          "ec2:DeleteTags"
-        ],
-        "Resource" : [
-          "arn:aws:ec2:*:*:volume/*",
-          "arn:aws:ec2:*:*:snapshot/*"
-        ],
-        "Condition" : {
-          "StringEquals" : {
-            "aws:ResourceTag/Managed-By" : "Datafy.io"
-          }
         }
       },
       {
