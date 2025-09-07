@@ -95,25 +95,6 @@ resource "aws_iam_role_policy" "datafy" {
       {
         "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
         "Action" : [
-          "ebs:PutSnapshotBlock",
-          "ebs:CompleteSnapshot",
-          "ebs:ListSnapshotBlocks",
-        ],
-        "Resource" : "*",
-        "Condition" : {
-          "StringEquals" : merge(
-            var.permissions_scope == "Regional" ? {
-              "aws:RequestedRegion" : var.regions
-            } : {},
-            {
-              "aws:ResourceTag/Managed-By" : "Datafy.io"
-            }
-          )
-        }
-      },
-      {
-        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
-        "Action" : [
           "kms:CreateGrant",
           "kms:GenerateDataKeyWithoutPlaintext",
           "kms:Decrypt",
