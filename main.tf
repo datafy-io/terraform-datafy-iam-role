@@ -82,13 +82,28 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
           "ebs:StartSnapshot",
-          "ec2:CreateTags",
-          "ec2:DeleteTags",
           "ebs:PutSnapshotBlock",
           "ebs:CompleteSnapshot",
           "ebs:ListSnapshotBlocks",
         ],
         "Resource" : "*",
+        "Condition" = var.permissions_scope == "Regional" ? {
+          "StringEquals" = {
+            "aws:RequestedRegion" = var.regions
+          }
+        } : {}
+      },
+      {
+        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
+        "Action" : [
+          "ec2:CreateTags",
+          "ec2:DeleteTags",
+        ],
+        "Resource" : [
+          "arn:aws:ec2:*:*:instance/*",
+          "arn:aws:ec2:*:*:volume/*",
+          "arn:aws:ec2:*:*:snapshot/*",
+        ],
         "Condition" = var.permissions_scope == "Regional" ? {
           "StringEquals" = {
             "aws:RequestedRegion" = var.regions
