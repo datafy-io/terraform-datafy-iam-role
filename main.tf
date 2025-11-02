@@ -34,7 +34,7 @@ resource "aws_iam_role" "datafy" {
         "Condition" : {
           "StringEquals" : {
             "${trimprefix(var.oidc_url, "https://")}:aud" = "sts.amazonaws.com",
-            "${trimprefix(var.oidc_url, "https://")}:sub" = "datafy.io"
+            "${trimprefix(var.oidc_url, "https://")}:sub" = "datafy.io/accounts/${var.account_id}"
           }
         }
       }

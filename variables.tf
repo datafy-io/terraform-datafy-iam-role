@@ -43,6 +43,16 @@ variable "regions" {
   }
 }
 
+variable "account_id" {
+  type        = string
+  description = "The Datafy.io Account ID associated with your account."
+
+  validation {
+    condition     = length(var.account_id) > 0
+    error_message = "Account ID cannot be empty."
+  }
+}
+
 variable "role_name" {
   type        = string
   description = "Name of the IAM role to be created. This should be unique within the AWS account and region."
