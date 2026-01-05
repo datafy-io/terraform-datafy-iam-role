@@ -82,6 +82,7 @@ variable "tags" {
 }
 
 locals {
+  oidc_provider_host = trimprefix(var.oidc_url, "https://")
   role_version = try(
     [
       for m in lookup(jsondecode(file("${path.root}/.terraform/modules/modules.json")), "Modules", []) :

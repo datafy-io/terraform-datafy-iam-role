@@ -12,8 +12,9 @@ resource "aws_iam_openid_connect_provider" "datafy" {
 resource "aws_iam_role" "datafy" {
   name        = var.role_name
   description = "Service Role for Datafy.io"
-  tags        = merge(
+  tags = merge(
     {
+      "datafy:account:id"   = var.account_id,
       "datafy:role:scope"   = var.permissions_scope
       "datafy:role:level"   = var.permissions_level
       "datafy:role:version" = local.role_version
@@ -33,8 +34,8 @@ resource "aws_iam_role" "datafy" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${trimprefix(var.oidc_url, "https://")}:aud" = "sts.amazonaws.com",
-            "${trimprefix(var.oidc_url, "https://")}:sub" = "datafy.io/accounts/${var.account_id}"
+            "${local.oidc_provider_host}:aud" = "sts.amazonaws.com",
+            "${local.oidc_provider_host}:sub" = "datafy.io/${var.account_id}"
           }
         }
       }
