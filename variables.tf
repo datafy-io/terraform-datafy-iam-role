@@ -45,11 +45,11 @@ variable "regions" {
 
 variable "account_id" {
   type        = string
-  description = "The Datafy.io Account ID associated with your account."
+  description = "Your Datafy.io Account ID."
 
   validation {
-    condition     = length(var.account_id) > 0
-    error_message = "Account ID cannot be empty."
+    condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", var.account_id))
+    error_message = "Account ID must be a valid UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."
   }
 }
 
