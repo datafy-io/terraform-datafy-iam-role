@@ -167,11 +167,3 @@ resource "aws_iam_role_policy" "datafy_validation" {
     ]
   })
 }
-
-locals {
-  allowed_subs = compact([
-    length(trim(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "",
-    length(trim(var.organization_id)) > 0 ? "datafy.io/${var.organization_id}" : "",
-    length(trim(var.account_id)) == 0 && length(trim(var.organization_id)) == 0 ? "datafy.io" : "",
-  ])
-}
