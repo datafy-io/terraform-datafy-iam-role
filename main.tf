@@ -15,7 +15,6 @@ resource "aws_iam_role" "datafy" {
   tags = merge(
     {
       "datafy:account:id"      = var.account_id,
-      "datafy:organization:id" = var.organization_id,
       "datafy:role:scope"      = var.permissions_scope,
       "datafy:role:level"      = var.permissions_level,
       "datafy:role:version"    = local.role_version,
@@ -36,11 +35,7 @@ resource "aws_iam_role" "datafy" {
         "Condition" : {
           "StringEquals" : {
             "${local.oidc_provider_host}:aud" = "sts.amazonaws.com",
-            "${local.oidc_provider_host}:sub" = compact([
-              length(trim(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "",
-              length(trim(var.organization_id)) > 0 ? "datafy.io/${var.organization_id}" : "",
-              length(trim(var.account_id)) == 0 && length(trim(var.organization_id)) == 0 ? "datafy.io" : "",
-            ]),
+            "${local.oidc_provider_host}:sub" = length(trim(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "datafy.io",
           }
         }
       }
