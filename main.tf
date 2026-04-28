@@ -68,7 +68,6 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:DescribeVolumes",
           "ec2:DescribeVolumeStatus",
           "ec2:DescribeVolumesModifications",
-          "ec2:GetConsoleOutput",
         ],
         "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
@@ -89,6 +88,7 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateVolume",
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
+          "ec2:GetConsoleOutput",
           "ebs:StartSnapshot",
           "ebs:PutSnapshotBlock",
           "ebs:CompleteSnapshot",
