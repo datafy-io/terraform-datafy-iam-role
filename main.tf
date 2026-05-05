@@ -35,7 +35,7 @@ resource "aws_iam_role" "datafy" {
         "Condition" : {
           "StringEquals" : {
             "${local.oidc_provider_host}:aud" = "sts.amazonaws.com",
-            "${local.oidc_provider_host}:sub" = length(trim(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "datafy.io",
+            "${local.oidc_provider_host}:sub" = length(trimspace(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "datafy.io",
           }
         }
       }

@@ -23,10 +23,6 @@ module "datafy_role" {
   regions           = ["us-east-1", "us-west-2"]
 }
 
-output "datafy_role_name" {
-  value = module.datafy_role.role_name
-}
-
 output "datafy_role_arn" {
   value = module.datafy_role.role_arn
 }

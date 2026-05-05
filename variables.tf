@@ -48,7 +48,7 @@ variable "account_id" {
   description = "Your Datafy Account ID or Organization ID (Optional)."
 
   validation {
-    condition     = length(trim(var.account_id)) == 0 || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", var.account_id))
+    condition     = length(trimspace(var.account_id)) == 0 || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", var.account_id))
     error_message = "Account ID must be a valid UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."
   }
 }
@@ -56,7 +56,7 @@ variable "account_id" {
 variable "role_name" {
   type        = string
   description = "Name of the IAM role to be created. This should be unique within the AWS account and region."
-  default     = "DatafyIORole"
+  default     = "DatafyIORoleDima"
 
   validation {
     condition     = length(var.role_name) > 0
@@ -67,7 +67,7 @@ variable "role_name" {
 variable "oidc_url" {
   type        = string
   description = "OIDC URL for the IAM role. This is typically the URL of the OIDC provider that will be used to authenticate users."
-  default     = "https://oidc.datafy.io"
+  default     = "https://oidc-dev345.datafy.io"
 
   validation {
     condition     = can(regex("https://[a-zA-Z0-9.-]+", var.oidc_url))
