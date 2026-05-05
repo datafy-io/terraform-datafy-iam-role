@@ -43,6 +43,16 @@ variable "regions" {
   }
 }
 
+variable "account_id" {
+  type        = string
+  description = "Your Datafy Account ID or Organization ID (Optional)."
+
+  validation {
+    condition     = length(trimspace(var.account_id)) == 0 || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", var.account_id))
+    error_message = "Account ID must be a valid UUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)."
+  }
+}
+
 variable "role_name" {
   type        = string
   description = "Name of the IAM role to be created. This should be unique within the AWS account and region."
@@ -69,4 +79,15 @@ variable "tags" {
   type        = map(string)
   description = "A map of tags to assign to the created resources."
   default     = {}
+}
+
+locals {
+  oidc_provider_host = trimprefix(var.oidc_url, "https://")
+  role_version = try(
+    [
+      for m in lookup(jsondecode(file("${path.root}/.terraform/modules/modules.json")), "Modules", []) :
+      "v${m.Version}" if try(startswith(m.Source, "registry.terraform.io/datafy-io/iam-role"), false) && can(m.Version)
+    ][0],
+    ""
+  )
 }

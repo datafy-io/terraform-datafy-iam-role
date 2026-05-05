@@ -17,13 +17,10 @@ module "datafy_role" {
   source  = "datafy-io/iam-role/datafy"
   version = "~> 1.0"
 
+  account_id        = "123e4567-e89b-12d3-a456-426614174000"
   permissions_level = "AutoScaler"
   permissions_scope = "Regional"
   regions           = ["us-east-1", "us-west-2"]
-}
-
-output "datafy_role_name" {
-  value = module.datafy_role.role_name
 }
 
 output "datafy_role_arn" {

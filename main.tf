@@ -12,7 +12,15 @@ resource "aws_iam_openid_connect_provider" "datafy" {
 resource "aws_iam_role" "datafy" {
   name        = var.role_name
   description = "Service Role for Datafy.io"
-  tags        = var.tags
+  tags = merge(
+    {
+      "datafy:account:id"      = var.account_id,
+      "datafy:role:scope"      = var.permissions_scope,
+      "datafy:role:level"      = var.permissions_level,
+      "datafy:role:version"    = local.role_version,
+    },
+    var.tags,
+  )
 
   assume_role_policy = jsonencode({
     "Version" : "2008-10-17",
@@ -26,8 +34,8 @@ resource "aws_iam_role" "datafy" {
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${trimprefix(var.oidc_url, "https://")}:aud" = "sts.amazonaws.com",
-            "${trimprefix(var.oidc_url, "https://")}:sub" = "datafy.io"
+            "${local.oidc_provider_host}:aud" = "sts.amazonaws.com",
+            "${local.oidc_provider_host}:sub" = length(trimspace(var.account_id)) > 0 ? "datafy.io/${var.account_id}" : "datafy.io",
           }
         }
       }
@@ -60,7 +68,6 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:DescribeVolumes",
           "ec2:DescribeVolumeStatus",
           "ec2:DescribeVolumesModifications",
-          "ec2:GetConsoleOutput",
         ],
         "Resource" : "*",
         "Condition" = var.permissions_scope == "Regional" ? {
@@ -81,14 +88,30 @@ resource "aws_iam_role_policy" "datafy" {
           "ec2:CreateVolume",
           "ec2:CreateSnapshot",
           "ec2:CreateSnapshots",
+          "ec2:GetConsoleOutput",
           "ebs:StartSnapshot",
-          "ec2:CreateTags",
-          "ec2:DeleteTags",
           "ebs:PutSnapshotBlock",
           "ebs:CompleteSnapshot",
           "ebs:ListSnapshotBlocks",
         ],
         "Resource" : "*",
+        "Condition" = var.permissions_scope == "Regional" ? {
+          "StringEquals" = {
+            "aws:RequestedRegion" = var.regions
+          }
+        } : {}
+      },
+      {
+        "Effect" : var.permissions_level == "Sensor" ? "Deny" : "Allow",
+        "Action" : [
+          "ec2:CreateTags",
+          "ec2:DeleteTags",
+        ],
+        "Resource" : [
+          "arn:aws:ec2:*:*:instance/*",
+          "arn:aws:ec2:*:*:volume/*",
+          "arn:aws:ec2:*:*:snapshot/*",
+        ],
         "Condition" = var.permissions_scope == "Regional" ? {
           "StringEquals" = {
             "aws:RequestedRegion" = var.regions
