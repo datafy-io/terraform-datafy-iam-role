@@ -56,7 +56,7 @@ variable "account_id" {
 variable "role_name" {
   type        = string
   description = "Name of the IAM role to be created. This should be unique within the AWS account and region."
-  default     = "DatafyIORoleDima"
+  default     = "DatafyIORole"
 
   validation {
     condition     = length(var.role_name) > 0
@@ -67,7 +67,7 @@ variable "role_name" {
 variable "oidc_url" {
   type        = string
   description = "OIDC URL for the IAM role. This is typically the URL of the OIDC provider that will be used to authenticate users."
-  default     = "https://oidc-dev345.datafy.io"
+  default     = "https://oidc.datafy.io"
 
   validation {
     condition     = can(regex("https://[a-zA-Z0-9.-]+", var.oidc_url))
