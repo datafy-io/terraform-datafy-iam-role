@@ -1,5 +1,7 @@
 # Datafy Role of AutoScaler with Regional permissions
 
+> **⚠️ DEPRECATED** — This module has moved to the [`iam-role` submodule](https://registry.terraform.io/modules/datafy-io/modules/aws/latest/submodules/iam-role) of [datafy-io/modules/aws](https://registry.terraform.io/modules/datafy-io/modules/aws/latest). Use `datafy-io/modules/aws//modules/iam-role` instead.
+
 This example demonstrates how to create a Datafy IAM Role with AutoScaler permissions and a regional scope using Terraform.
 
 ## Prerequisites
